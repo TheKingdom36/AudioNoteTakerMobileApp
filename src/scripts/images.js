@@ -1,0 +1,1 @@
+export const logoImage = require('../img//resizedLogo.png');

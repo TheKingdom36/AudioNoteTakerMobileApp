@@ -1,38 +1,37 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import AudioPanel from '../molecules/AudioPanel';
+import {StyleSheet} from 'react-native';
 import Player from './Player';
-
-const PanelList = ({ audioIds, options = {} }) => {
-
-  const renderItem = ({ item }) => <Player audioId={item} />;
+import {List, ListItem, Text} from '@ui-kitten/components';
+import {Card} from '@ui-kitten/components';
+const PanelList = ({audioIds, options = {}}) => {
+  const renderItem = ({item}) => (
+    <ListItem style={[styles.item]}>
+      <Player audioId={item} />
+    </ListItem>
+  );
 
   const [titleSearchText, setTitleSearchText] = React.useState('');
 
-
   return (
-    <View style={[styles.container]}>
-      <View behavior="padding" style={[styles.listSection]}>
-        <FlatList
-          numColumns={2}
-          horizontal={false}
-          data={audioIds}
-          renderItem={renderItem}
-          keyExtractor={item => item.toString()}
-        />
-      </View>
-    </View>
+    <List
+      style={styles.container}
+      numColumns={2}
+      horizontal={false}
+      data={audioIds}
+      renderItem={renderItem}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
+    backgroundColor: '#fcc57e',
+  },
+  item: {
+    width: '50%',
+    backgroundColor: '#fcc57e',
+  },
 });
-
-
 
 export default PanelList;

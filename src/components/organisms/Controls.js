@@ -1,36 +1,27 @@
 import React from 'react';
 import defaultStringValue from '../atoms/String';
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
-const Controls = ({
-  paused,
-  onPressPlay,
-  onPressPause,
-}) => {
+const Controls = ({paused, onPressPlay, onPressPause}) => {
   return (
     <View style={styles.container}>
-      {!paused ?
+      {!paused ? (
         <TouchableOpacity onPress={onPressPause}>
           <View style={styles.playButton}>
             <Image source={require('../../img/resizedLogo.png')} />
           </View>
-        </TouchableOpacity> :
+        </TouchableOpacity>
+      ) : (
         <TouchableOpacity onPress={onPressPlay}>
           <View style={styles.playButton}>
             <Image source={require('../../img/resizedLogo.png')} />
           </View>
         </TouchableOpacity>
-      }
-    </View>)
-}
-
+      )}
+    </View>
+  );
+};
 
 export default Controls;
 
@@ -49,5 +40,5 @@ const styles = StyleSheet.create({
     borderRadius: 72 / 2,
     alignItems: 'center',
     justifyContent: 'center',
-  }
-})
+  },
+});

@@ -1,72 +1,59 @@
-import React, { useState } from 'react';
-import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, {useState} from 'react';
+import {View, FlatList, StyleSheet, Text, Pressable} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Card} from '@ui-kitten/components';
 
+const SelectablePanel = props => {
+  const onPress = () => {
+    props.onSelect({text: props.text});
+  };
 
-const SelectablePanel = (props) => {
-
-    const onPress = () => {
-        props.onSelect({ text: props.text });
-    }
-
-    return (
-        <View style={containerStyle(props.isSelected)}>
-            <Pressable onPress={onPress} >
-                <View>
-                    <Text style={textStyle(props.isSelected)}>{props.text}</Text>
-                </View>
-            </Pressable >
-        </View >
-    );
+  return (
+    <Pressable style={containerStyle(props.isSelected)} onPress={onPress}>
+      <Text style={textStyle(props.isSelected)}>{props.text}</Text>
+    </Pressable>
+  );
 };
 
+const containerStyle = isSelected => {
+  let backColor = '';
 
-const containerStyle = (isSelected) => {
+  if (isSelected) {
+    backColor = '#FFA500';
+  } else {
+    backColor = 'white';
+  }
 
-    let backColor = "";
+  return {
+    flex: 1,
+    margin: 5,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: '#FFA500',
+    width: 250,
+    height: 60,
+    backgroundColor: backColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+};
 
+const textStyle = isSelected => {
+  let textColor = '';
 
-    if (isSelected) {
-        backColor = "#FFA500";
-    } else {
-        backColor = "white";
-    }
+  if (isSelected) {
+    textColor = 'white';
+  } else {
+    textColor = '#FFA500';
+  }
 
-    return {
-        flex: 1,
-        margin: 5,
-        borderRadius: 20,
-        borderWidth: 3,
-        borderColor: "#FFA500",
-        width: 250,
-        height: 50,
-        backgroundColor: backColor,
-        justifyContent: 'center',
-        alignItems: "center"
-    }
-}
+  return {
+    color: textColor,
+  };
+};
 
-const textStyle = (isSelected) => {
+const componentStyle = isSelected => {};
 
-    let textColor = "";
-
-    if (isSelected) {
-        textColor = "white";
-    } else {
-        textColor = "#FFA500";
-    }
-
-    return {
-        color: textColor
-    }
-}
-
-const componentStyle = (isSelected) => {
-
-}
-
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});
 
 export default SelectablePanel;

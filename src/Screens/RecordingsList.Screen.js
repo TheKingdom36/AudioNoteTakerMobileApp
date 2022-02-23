@@ -10,10 +10,11 @@ import FilterSection from '../Components/FilterSection.component';
 import PanelList from '../Components/PanelList.component';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateRecList} from '../Utils/AudioRecsSlice';
+import {updateRecList} from '../Slices/AudioRecsSlice';
 import {Colors} from '../Utils/Colors';
 import AudioApi from '../Utils/ClientApis/AudioApi';
 import {white} from 'react-native-paper/lib/typescript/styles/colors';
+import {Platform} from 'react-native';
 
 function RecordingsListScreen({navigation}) {
   const [filteredAudioIds, setFilteredAudioIds] = useState([]);
@@ -57,19 +58,20 @@ function RecordingsListScreen({navigation}) {
   return (
     <View
       // eslint-disable-next-line no-undef
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
-        style={styles.innerBox}>
-        <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+          enabled={false}>
           <View style={[styles.filterSection]}>
             <FilterSection onSubmit={onFilter} />
           </View>
+          <View style={[styles.buffer]} />
           <View style={[styles.listSection]}>
             <PanelList audioIds={audioIds} />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </View>
   );
@@ -80,6 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'lightgrey',
     padding: 10,
+    paddingTop: 20,
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -94,14 +97,20 @@ const styles = StyleSheet.create({
     marginBottom: 36,
   },
   filterSection: {
-    paddingTop: 5,
     height: '30%',
-    minHeight: 200,
+    minHeight: 250,
     backgroundColor: 'white',
+    borderRadius: 20,
     padding: 10,
   },
   listSection: {
-    height: '70%',
+    height: '68%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+  },
+  buffer: {
+    height: '2%',
   },
 });
 

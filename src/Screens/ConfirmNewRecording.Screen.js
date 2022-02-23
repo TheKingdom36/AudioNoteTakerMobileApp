@@ -5,42 +5,51 @@ import AudioPlayer from '../Components/Player.component';
 import NewRecordingForm from '../Components/NewRecordingForm.component';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {ScreenNames} from './MainNavigator';
-
+import AudioApi from '../Utils/ClientApis/AudioApi';
 const ConfirmNewRecordingScreen = ({navigation, route}) => {
+  console.log('route', route);
+
+  const onSubmit = data => {
+    console.log('data', data);
+    AudioApi.instance.createRecording(route.params.path, data.Title, data.tags);
+  };
+
   return (
     <View style={styles.container}>
-      <Pressable
-        style={styles.cancel}
-        onPress={() => navigation.navigate(ScreenNames.Home)}>
-        <Entypo name="cross" size={50} />
-      </Pressable>
+      <View style={styles.mainView}>
+        <Pressable
+          style={styles.cancel}
+          onPress={() => navigation.navigate(ScreenNames.Home)}>
+          <Entypo name="cross" size={50} />
+        </Pressable>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}>
-        <View style={[styles.audioPlayerSection]}>
-          <AudioPlayer
-            containerStyle={styles.audioPlayerContainer}
-            audioId={1}
-          />
-        </View>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}>
+          <View style={[styles.audioPlayerSection]}>
+            <AudioPlayer
+              containerStyle={styles.audioPlayerContainer}
+              audioUrl={route.params.path}
+            />
+          </View>
 
-        <NewRecordingForm />
-      </ScrollView>
+          <NewRecordingForm onSubmit={data => onSubmit(data)} />
+        </ScrollView>
+      </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
+    padding: 10,
+    backgroundColor: Colors.secondaryColor,
   },
   contentContainer: {
     justifyContent: 'center',
     flexGrow: 1,
   },
   scrollView: {
-    backgroundColor: Colors.mainBackground,
     marginHorizontal: 20,
   },
   informationInput: {
@@ -63,6 +72,11 @@ const styles = StyleSheet.create({
   cancel: {alignItems: 'flex-end', paddingRight: 20, paddingTop: 20},
   descriptionInput: {},
   titleInput: {},
+  mainView: {
+    flex: 1,
+    borderRadius: 20,
+    backgroundColor: 'white',
+  },
 });
 
 export default ConfirmNewRecordingScreen;

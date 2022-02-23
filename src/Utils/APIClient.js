@@ -164,31 +164,6 @@ class ApiClient {
   }
 
   /**
-   * Checks whether the given parameter value represents file-like content.
-   * @param param The parameter to check.
-   * @returns {Boolean} <code>true</code> if <code>param</code> represents a file.
-   */
-  isFileParam(param) {
-    // fs.ReadStream in Node.js and Electron (but not in runtime like browserify)
-    if (typeof require === 'function') {
-      let fs;
-      try {
-        fs = require('fs');
-      } catch (err) {}
-      if (fs && fs.ReadStream && param instanceof fs.ReadStream) {
-        return true;
-      }
-    }
-
-    // File in browser (it seems File object is also instance of Blob, but keep this for safe)
-    if (typeof File === 'function' && param instanceof File) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
    * Normalizes parameter values:
    * <ul>
    * <li>remove nils</li>
@@ -207,7 +182,7 @@ class ApiClient {
         params[key] != null
       ) {
         var value = params[key];
-        if (this.isFileParam(value) || Array.isArray(value)) {
+        if (value === 'file' || Array.isArray(value)) {
           newParams[key] = value;
         } else {
           newParams[key] = this.paramToString(value);
@@ -254,6 +229,7 @@ class ApiClient {
    * @param {Array.<String>} authNames An array of authentication method names.
    */
   applyAuthToRequest(options, auth) {
+    console.log(auth);
     switch (auth.type) {
       case 'basic':
         if (auth.username || auth.password) {
@@ -273,7 +249,7 @@ class ApiClient {
               : auth.accessToken;
           options.headers.append(
             'Authorization',
-            'Bearer' + localVarBearerToken,
+            'Bearer ' + localVarBearerToken,
           );
         }
 
@@ -412,6 +388,7 @@ class ApiClient {
     };
 
     // apply authentications
+    console.log('Apply auth');
     this.applyAuthToRequest(options, auth);
     // set query parameters
     if (httpMethod.toUpperCase() === 'GET' && this.cache === false) {
@@ -436,20 +413,20 @@ class ApiClient {
 
     if (contentType === 'application/x-www-form-urlencoded') {
       options.body = querystring.stringify(this.normalizeParams(formParams));
-    } else if (contentType == 'multipart/form-data') {
+    } else if (contentType === 'multipart/form-data') {
       var _formParams = this.normalizeParams(formParams);
       var formData = new FormData();
 
       for (var key in _formParams) {
         if (_formParams.hasOwnProperty(key)) {
           let _formParamsValue = _formParams[key];
-          if (this.isFileParam(_formParamsValue)) {
+          if (key === 'file') {
             // file field
             formData.append(key, _formParamsValue);
           } else if (
             Array.isArray(_formParamsValue) &&
             _formParamsValue.length &&
-            this.isFileParam(_formParamsValue[0])
+            _formParamsValue[0] === 'file'
           ) {
             // multiple files
             _formParamsValue.forEach(file => formData.append(key, file));

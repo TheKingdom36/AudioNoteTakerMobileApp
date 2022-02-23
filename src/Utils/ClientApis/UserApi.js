@@ -1,40 +1,35 @@
 import ApiClient from '../APIClient';
-import Token from '../models/Token';
-import User from '../models/User';
+import User from '../Models/User';
+import {getAuthenication} from './ClientAuthenication';
 
-export default class UserApi {
+class UserApi {
   constructor(apiClient) {
     this.apiClient = apiClient || ApiClient.instance;
   }
 
-  logInUser(username, password) {
+  getUser() {
     let pathParams = {};
     let queryParams = {};
     let headerParams = {};
     let formParams = {};
     let postBody = null;
-    let authNames = ['basic'];
     let contentTypes = [];
     let accepts = ['application/xml', 'application/json'];
     let returnType = User;
 
-    ApiClient.instance.addAuth({
-      basic: {
-        type: 'basic',
-        username: 'Sanson3@gmail.com',
-        password: 'hcgEynqjHczk',
-      },
-    });
+    let auth = getAuthenication();
+
+    console.log(auth);
 
     return ApiClient.instance.callApi(
-      '/login',
-      'POST',
+      '/user',
+      'GET',
       pathParams,
       queryParams,
       headerParams,
       formParams,
       postBody,
-      authNames,
+      auth,
       contentTypes,
       accepts,
       returnType,
@@ -42,3 +37,10 @@ export default class UserApi {
     );
   }
 }
+
+/**
+ * The default API client implementation.
+ * @type {module:UserApi}
+ */
+UserApi.instance = new UserApi();
+export default UserApi;

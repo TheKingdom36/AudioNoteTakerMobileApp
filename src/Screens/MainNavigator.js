@@ -37,10 +37,6 @@ const MainScreenNavigator = () => {
         component={RecordingInfoScreen}
       />
       <MainStackNav.Screen
-        name={ScreenNames.NewRecording}
-        component={CreateNewRecordingScreen}
-      />
-      <MainStackNav.Screen
         name={ScreenNames.ConfirmNewRecording}
         component={ConfirmNewRecordingScreen}
       />
@@ -82,6 +78,21 @@ const MainTabNav = () => {
       />
 
       <Tab.Screen
+        name="NewRecording"
+        component={CreateNewRecordingScreen}
+        options={{
+          tabBarLabel: 'Record',
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons
+              name="microphone"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+
+      {/*<Tab.Screen
         name="ProfileTab"
         component={ProfileScreen}
         options={{
@@ -90,7 +101,7 @@ const MainTabNav = () => {
             <MaterialCommunityIcons name="cog" color={color} size={size} />
           ),
         }}
-      />
+      />*/}
     </Tab.Navigator>
   );
 };

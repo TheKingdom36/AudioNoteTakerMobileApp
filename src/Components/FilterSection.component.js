@@ -3,13 +3,14 @@ import {useSelector} from 'react-redux';
 import {View, StyleSheet, TextInput} from 'react-native';
 import SelectablePanel from '../Elements/SelectablePanel';
 import DateSelection from './DateSelection.component';
-import ListModel from './TagList.Model';
+import ListModel from './List.Model';
 import {Text, List, ButtonGroup, Button, Layout} from '@ui-kitten/components';
+import {Colors} from '../Utils/Colors';
 
 //add onFilterChange
 const FilterSection = ({onSubmit}) => {
   const [titleSearchText, setTitleSearchText] = useState('');
-  const [selectedStartDate, setSelectedStartDate] = useState(0);
+  const [selectedStartDate, setSelectedStartDate] = useState('any');
   const [selectedEndDate, setSelectedEndDate] = useState(0);
   const [selectedTags, setSelectedTags] = useState(new Set([]));
   var sTags = Array.from(selectedTags);
@@ -19,7 +20,7 @@ const FilterSection = ({onSubmit}) => {
 
     state.audioRecs.values.forEach(element => {
       element.tags.forEach(tag => {
-        tempUniqueTags.add(tag);
+        tempUniqueTags.add(tag.name);
       });
     });
 
@@ -54,6 +55,7 @@ const FilterSection = ({onSubmit}) => {
   );
   const tagRenderItemSelect = ({item}) => (
     <SelectablePanel
+      styles={{width: '50%'}}
       isSelected={selectedTags.has(item)}
       onSelect={addToSelectedList}
       text={item}
@@ -68,7 +70,7 @@ const FilterSection = ({onSubmit}) => {
             style={[styles.input]}
             onChangeText={setTitleSearchText}
             value={titleSearchText}
-            placeholder="title..."
+            placeholder="Title to search..."
           />
         </View>
       </View>
@@ -87,6 +89,7 @@ const FilterSection = ({onSubmit}) => {
             )}
             <ListModel
               renderItemSelect={tagRenderItemSelect}
+              modelStyle={{width: '80%'}}
               items={uniqueTags}
               buttonText="Add Tag"
               title="Avaiable Tags"
@@ -97,7 +100,19 @@ const FilterSection = ({onSubmit}) => {
 
       <View style={[styles.horizontalSplit]}>
         <View style={[styles.dateSearchSec]}>
-          <DateSelection />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}>
+            <Text>{selectedStartDate}</Text>
+            <Text> to</Text>
+            <Text>{selectedEndDate}</Text>
+          </View>
+          <View style={{alignSelf: 'flex-end', flexDirection: 'row'}}>
+            <DateSelection />
+          </View>
         </View>
       </View>
 
@@ -137,6 +152,8 @@ const styles = StyleSheet.create({
   },
   dateSearchSec: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   nameSearchSec: {
     flex: 1,
@@ -157,18 +174,21 @@ const styles = StyleSheet.create({
   },
   tagSec: {
     flex: 2,
-    borderWidth: 2,
+    margin: 2,
+    borderWidth: 1,
     borderRadius: 20,
     paddingLeft: 10,
     paddingRight: 10,
+    alignSelf: 'center',
+    backgroundColor: Colors.secondaryColor,
     maxHeight: 30,
   },
 
   horizontalSplit: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   button: {
     flex: 1,
@@ -180,6 +200,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
   },
+  dateSelection: {alignItems: 'flex-end'},
 });
 
 export default FilterSection;

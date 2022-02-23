@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {Input, Button, ButtonGroup} from '@ui-kitten/components';
+import AudioApi from '../Utils/ClientApis/AudioApi';
 
-const NewRecordingForm = () => {
+const NewRecordingForm = ({onSubmit}) => {
   const {
     handleSubmit,
     control,
@@ -22,7 +23,6 @@ const NewRecordingForm = () => {
       Tags: [],
     },
   });
-  const onSubmit = data => console.log('onSubmit', data);
 
   return (
     <View style={styles.container}>
@@ -78,7 +78,7 @@ const NewRecordingForm = () => {
         </Button>
         <Button
           style={[styles.btn]}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit(data => onSubmit(data))}
           status={'basic'}>
           <Text>Create</Text>
         </Button>
@@ -105,13 +105,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: 10,
-    padding: 8,
+    paddingBottom: 30,
   },
   input: {
-    backgroundColor: 'white',
-    borderColor: 'white',
-    height: 40,
-    padding: 10,
+    borderColor: 'black',
+    borderWidth: 1,
     borderRadius: 4,
   },
   bottomButtons: {

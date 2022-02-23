@@ -13,7 +13,7 @@ import DatePicker from 'react-native-date-picker';
 import {Modal, Text} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
 
-const DateSelection = (onConfirm, onCancel) => {
+const DateSelection = (onConfirm, onCancel, style) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -63,13 +63,18 @@ const DateSelection = (onConfirm, onCancel) => {
           <View style={styles.btnTray}>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setOpen(!open)}>
+              onPress={() => {
+                setOpen(!open);
+              }}>
               <Text>Close</Text>
             </Pressable>
 
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setOpen(!open)}>
+              onPress={() => {
+                onConfirm(startDate, endDate);
+                setOpen(!open);
+              }}>
               <Text>Confirm</Text>
             </Pressable>
           </View>

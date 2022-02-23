@@ -1,8 +1,6 @@
 import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
-
-import RecordingInfoScreen from './AudioInfo.Screen';
 import SignupScreen from './SignupScreen';
 import LoginScreen from './Login.Screen';
 
@@ -13,7 +11,7 @@ export const LoginNavScreenNames = {
   Signup: 'Signup',
 };
 
-const LoginNavigator = () => {
+const LoginNavigator = props => {
   return (
     <LoginNav.Navigator
       screenOptions={{
@@ -21,7 +19,7 @@ const LoginNavigator = () => {
       }}>
       <LoginNav.Screen
         name={LoginNavScreenNames.Login}
-        component={LoginScreen}
+        children={() => <LoginScreen setSignedIn={props.setIsSignedIn} />}
       />
 
       <LoginNav.Screen

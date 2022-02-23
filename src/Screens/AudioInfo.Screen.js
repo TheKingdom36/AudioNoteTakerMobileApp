@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Pressable} from 'react-native';
+import {ScrollView, Pressable, View} from 'react-native';
 import {StyleService, Text, useStyleSheet} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
 import AudioDetails from '../Components/AudioDetails.component';
@@ -12,31 +12,34 @@ import {ScreenNames} from './MainNavigator';
 const AudioInfo = ({route, navigation}) => {
   const styles = useStyleSheet(themedStyles);
 
+  const audioId = route.params.audioId;
+
   const audioInfo = useSelector(state => {
-    return state.audioRecs.values.find(
-      element => element.id === route.params.audioId,
-    );
+    return state.audioRecs.values.find(element => element.id === audioId);
   });
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}>
-      <Pressable
-        style={styles.cancel}
-        onPress={() => navigation.navigate(ScreenNames.Home)}>
-        <Entypo name="cross" size={50} />
-      </Pressable>
-      <Text style={styles.titleText} category="h1">
-        {audioInfo.name}
-      </Text>
-      <AudioPlayer
-        style={styles.audioPlayerControls}
-        audioUrl={'default audioUrl'}
-      />
-      <AudioDetails style={styles.audioDetails} data={audioInfo} />
+      <View>
+        <Pressable
+          style={styles.cancel}
+          onPress={() => navigation.navigate(ScreenNames.Home)}>
+          <Entypo name="cross" size={50} />
+        </Pressable>
+        <Text style={styles.titleText} category="h1">
+          {audioInfo.name}
+        </Text>
+        <AudioPlayer
+          style={styles.audioPlayerControls}
+          audioUrl={'default audioUrl'}
+          audioId={audioId}
+        />
+        <AudioDetails style={styles.audioDetails} data={audioInfo} />
 
-      <TranscribeCard style={styles.transcribe} data={audioInfo} />
+        <TranscribeCard style={styles.transcribe} data={audioInfo} />
+      </View>
     </ScrollView>
   );
 };

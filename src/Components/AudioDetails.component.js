@@ -5,9 +5,7 @@ import LabeledText from '../Elements/LabeledText';
 import {black} from 'react-native-paper/lib/typescript/styles/colors';
 
 const AudioDetails = ({data, style, ...viewProps}) => {
-  console.log('info', data);
   const Details = ({audioInfo}) => {
-    console.log('title', audioInfo);
     return (
       <View>
         <Text appearance="hint" category="s2">

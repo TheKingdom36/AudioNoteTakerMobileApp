@@ -1,5 +1,8 @@
 import ApiClient from '../APIClient';
 import Audio from '../Models/Audio';
+import store from '../../Slices/store';
+import {Platform} from 'react-native';
+import {getAuthenication} from './ClientAuthenication';
 
 class AudioApi {
   getRecordings({tags = [], title = '', startDate = '', endDate = ''} = {}) {
@@ -32,11 +35,7 @@ class AudioApi {
     let accepts = ['application/xml', 'application/json'];
     let returnType = [Audio];
 
-    let auth = {
-      type: 'basic',
-      username: 'Sanson3@gmail.com',
-      password: 'hcgEynqjHczk',
-    };
+    let auth = getAuthenication();
 
     return ApiClient.instance.callApi(
       '/recordings',
@@ -56,7 +55,7 @@ class AudioApi {
 
   getRecording(id) {
     // eslint-disable-next-line prettier/prettier
-    let pathParams = {id: '37'};
+    let pathParams = {id: id};
     let queryParams = {};
     let headerParams = {};
     let formParams = {};
@@ -64,12 +63,7 @@ class AudioApi {
     let contentTypes = [];
     let accepts = [];
     let returnType = 'Blob';
-
-    let auth = {
-      type: 'basic',
-      username: 'Sanson3@gmail.com',
-      password: 'hcgEynqjHczk',
-    };
+    let auth = getAuthenication();
 
     return ApiClient.instance.callApi(
       '/recordings/{id}',
@@ -86,8 +80,71 @@ class AudioApi {
       null,
     );
   }
-}
 
+  deleteRecording(id) {
+    // eslint-disable-next-line prettier/prettier
+    let pathParams = {id: id};
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+    let postBody = null;
+    let contentTypes = [];
+    let accepts = [];
+    let returnType = null;
+
+    let auth = getAuthenication();
+
+    return ApiClient.instance.callApi(
+      '/recordings/{id}',
+      'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      auth,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+    );
+  }
+
+  createRecording(filePath, file_name, tags) {
+    // eslint-disable-next-line prettier/prettier
+    console.log(filePath);
+    const data = new FormData();
+    const recordFileType = Platform.select({
+      ios: 'm4a',
+      android: 'mp4',
+    });
+    const uri =
+      Platform.OS === 'android' ? filePath : filePath.replace('file://', '');
+    console.log('recordFileType', uri);
+    data.append('file', {
+      uri,
+      type: 'sound/mp4',
+      name: 'sound.mp4',
+    });
+
+    data.append('file_name', file_name);
+    data.append('tags', 'work');
+
+    var requestOptions = {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Basic ZGFuQGdtYWlsLmNvbTpwYXNzd29yZA==',
+      },
+      body: data,
+      redirect: 'follow',
+    };
+
+    fetch('http:\\\\localhost:9999/recordings/', requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
+}
 /**
  * The default API client implementation.
  * @type {module:AudioApi}

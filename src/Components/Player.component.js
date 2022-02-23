@@ -1,11 +1,10 @@
-import React, {Component, useState} from 'react';
-import {View, Text, StatusBar, Pressable} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 import AudioProgressBar from './PlayerProgressBar.component';
 import Controls from './PlayerControls.component.';
-import {useSelector} from 'react-redux';
-import LabeledText from '../Elements/LabeledText';
-import {ScreenNames} from '../Screens/MainNavigator';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+
 import withAudioPlayer from './withAudioPlayer';
 
 const AudioPlayer = ({
@@ -13,24 +12,28 @@ const AudioPlayer = ({
   onPlay,
   onPause,
   onSeek,
-  getPaused,
-  getDuration,
-  getPlayTime,
+  setPaused,
+  paused,
+  duration,
+  playTime,
 }) => {
   /*const audioInfo = useSelector(state => {
     return state.audioRecs.values.find(element => element.id === props.audioId);
   });*/
 
-  const audioUrl = props.audioUrl;
-
   const navigation = useNavigation();
 
-  /*var containerStyle;
-  if (props.containerStyle == null) {
-    containerStyle = styles.container;
-  } else {
-    containerStyle = props.containerStyle;
-  }*/
+  const Duration = () => {
+    return duration;
+  };
+
+  const PlayTime = () => {
+    if (isNaN(playTime)) {
+      return 0;
+    }
+
+    return playTime;
+  };
 
   return (
     <View style={props.style}>
@@ -38,19 +41,14 @@ const AudioPlayer = ({
       {/* <Header message="Playing From Charts" /> */}
 
       {/*Need to pass in the audio path to play*/}
-      <Controls
-        onPressPlay={onPlay}
-        onPressPause={onPause}
-        paused={getPaused()}
-      />
+      <Controls onPressPlay={onPlay} onPressPause={onPause} paused={paused} />
 
-      {/*
-        <AudioProgressBar
-          onSeek={onSeek}
-          trackLength={() => getDuration()}
-          onSlidingStart={() => setPaused(getPaused())}
-          currentPosition={() => getPlayTime()}
-        />*/}
+      {/* <AudioProgressBar
+        onSeek={onSeek}
+        trackLength={Duration()}
+        onSlidingStart={setPaused(paused)}
+        currentPosition={PlayTime()}
+      />*/}
     </View>
   );
 };

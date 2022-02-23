@@ -12,43 +12,47 @@ import {Text, Button, ButtonGroup} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+let audioRecorderPlayer = new AudioRecorderPlayer();
+
 const CreateNewRecordingScreen = ({navigation}) => {
   const [isRecording, setIsRecording] = useState(false);
   const [hasActiveRecording, setHasActiveRecording] = useState(false);
   const [recordTime, setRecordTime] = useState('00:00:00');
-  const [recordSecs, setRecordSecs] = useState(0);
+  const [uri, setUri] = useState('');
 
-  const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
-    new AudioRecorderPlayer(),
-  );
+  const recordListener = e => {
+    setRecordTime(audioRecorderPlayer.mmssss(e.currentPosition));
+  };
 
   const onStartRecord = async () => {
     if (hasActiveRecording === true) {
       audioRecorderPlayer.resumeRecorder();
-      const uri = await audioRecorderPlayer.resumeRecorder();
     } else {
       RequestRecordPermissions();
 
       var RNFS = require('react-native-fs');
 
-      const path = RNFS.DocumentDirectoryPath + '/' + 'temp.m4a';
+      const path = RNFS.DocumentDirectoryPath + '/' + 'temp';
+
+      let exists = await RNFS.exists(path);
+
+      if (exists) {
+        // exists call delete
+        await RNFS.unlink(path);
+      }
 
       const audioSet = {
-        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-        AudioSourceAndroid: AudioSourceAndroidType.MIC,
+        AudioEncoderAndroid: AudioEncoderAndroidType.DEFAULT,
+        AudioSourceAndroid: AudioSourceAndroidType.DEFAULT,
         AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
         AVNumberOfChannelsKeyIOS: 2,
         AVFormatIDKeyIOS: AVEncodingOption.aac,
       };
 
       const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
-
-      audioRecorderPlayer.addRecordBackListener(e => {
-        setRecordSecs(e.currentPosition);
-        setRecordTime(
-          audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-        );
-      });
+      console.log('uri', uri);
+      setUri(uri);
+      audioRecorderPlayer.addRecordBackListener(recordListener);
 
       setHasActiveRecording(true);
     }
@@ -57,66 +61,75 @@ const CreateNewRecordingScreen = ({navigation}) => {
   };
 
   const onStopRecord = async () => {
-    const result = await audioRecorderPlayer.stopRecorder();
-
-    audioRecorderPlayer.removeRecordBackListener();
-
-    setRecordSecs(0);
-
     setIsRecording(false);
+    const result = await audioRecorderPlayer.pauseRecorder();
 
-    var RNFS = require('react-native-fs');
-
-    const path = RNFS.DocumentDirectoryPath + '/temp.m4a';
-
-    setHasActiveRecording(false);
-
-    navigation.navigate(ScreenNames.ConfirmNewRecording, {path: path});
+    navigation.navigate(ScreenNames.ConfirmNewRecording, {path: uri});
   };
 
   const onPauseRecord = async () => {
+    let msg = await audioRecorderPlayer.pauseRecorder();
     setIsRecording(false);
-    audioRecorderPlayer.pauseRecorder();
   };
 
-  const onCancel = async () => {
+  const onReset = async () => {
+    const result = await audioRecorderPlayer.stopRecorder();
+    audioRecorderPlayer.removeRecordBackListener();
+
     setIsRecording(false);
-    navigation.navigate(ScreenNames.Home);
+    setRecordTime('00:00:00');
+    setHasActiveRecording(false);
+    console.log('result', result);
   };
+
+  const PauseIcon = props => (
+    <MaterialCommunityIcons name="pause" color={'black'} size={60} />
+  );
 
   return (
     <View style={[styles.contianer]}>
-      <View style={[styles.recordImage]}>
-        {isRecording === true ? (
-          <Pressable onPress={() => onPauseRecord()}>
-            <MaterialCommunityIcons name="record" size={60} />
-          </Pressable>
-        ) : (
-          <Pressable onPress={() => onStartRecord()}>
-            <MaterialCommunityIcons name="record-rec" size={100} />
-          </Pressable>
-        )}
-      </View>
+      <View style={[styles.recordingSection]}>
+        <View style={[styles.recordButtonSection]}>
+          {isRecording ? (
+            <Button
+              onPress={onPauseRecord}
+              style={styles.recordButton}
+              accessoryRight={PauseIcon}
+              size={'giant'}
+            />
+          ) : (
+            <Button
+              onPress={onStartRecord}
+              appearance={'outline'}
+              style={styles.recordButton}
+              size={'giant'}>
+              {recordTime === '00:00:00' ? (
+                <Text>Record</Text>
+              ) : (
+                <Text>Continue</Text>
+              )}
+            </Button>
+          )}
+        </View>
+        <View style={[styles.recordingValues]}>
+          <Text style={[styles.recordTimeLabel]}>RecordTime</Text>
+          <Text style={[styles.recordTimeText]}>{recordTime}</Text>
+        </View>
 
-      <View style={[styles.recordingValues]}>
-        <Text>RecordTime</Text>
-        <Text style={[styles.recordTimeText]}>{recordTime}</Text>
-      </View>
+        <ButtonGroup
+          style={[styles.bottomButtons]}
+          status={hasActiveRecording ? 'info' : 'danger'}>
+          <Button style={[styles.btn]} onPress={onReset}>
+            <Text>Reset</Text>
+          </Button>
 
-      <ButtonGroup style={[styles.bottomButtons]}>
-        <Button
-          style={[styles.btn]}
-          onPress={() => onCancel()}
-          status={'basic'}>
-          <Text>Cancel</Text>
-        </Button>
-        <Button
-          style={[styles.btn]}
-          onPress={() => onStopRecord()}
-          status={'basic'}>
-          <Text>Finish</Text>
-        </Button>
-      </ButtonGroup>
+          <Button
+            style={[styles.btn]}
+            onPress={hasActiveRecording ? onStopRecord : null}>
+            <Text>Finish</Text>
+          </Button>
+        </ButtonGroup>
+      </View>
     </View>
   );
 };
@@ -124,37 +137,49 @@ const CreateNewRecordingScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   contianer: {
     flex: 1,
-    backgroundColor: Colors.mainBackground,
-  },
-  recordImage: {
-    height: '45%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopWidth: 5,
-    borderBottomWidth: 5,
+    padding: 10,
     backgroundColor: Colors.secondaryColor,
   },
-  recordingValues: {
-    height: '40%',
-    marginTop: 'auto',
-    alignItems: 'center',
+  recordingSection: {
+    flex: 1,
     justifyContent: 'center',
-    borderTopWidth: 5,
-    borderBottomWidth: 5,
-    backgroundColor: Colors.secondaryColor,
+    borderRadius: 20,
+    backgroundColor: 'white',
+  },
+
+  recordButtonSection: {
+    flex: 3,
+    justifyContent: 'center',
+  },
+
+  recordButton: {
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    padding: 10,
+    borderRadius: 100,
   },
   bottomButtons: {
-    height: '10%',
-    marginTop: 'auto',
+    borderRadius: 20,
+    margin: 20,
   },
 
   btn: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    alignContent: 'center',
+  },
+  recordingValues: {
+    flex: 1,
+    alignSelf: 'center',
   },
   recordTimeText: {
-    fontSize: 50,
+    fontSize: 40,
+  },
+  recordTimeLabel: {
+    fontSize: 20,
+    alignSelf: 'flex-start',
   },
 });
 export default CreateNewRecordingScreen;

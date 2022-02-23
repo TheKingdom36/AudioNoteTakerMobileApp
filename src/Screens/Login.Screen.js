@@ -1,22 +1,21 @@
 import React, {useState, createRef} from 'react';
 import {
-  TouchableOpacity,
-  View,
-  Image,
   StyleSheet,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
 import {Input, Text, Button} from '@ui-kitten/components';
-import {useSelector, useDispatch} from 'react-redux';
-import {fetchToken} from '../Utils/AuthSlice';
+import {useDispatch} from 'react-redux';
+import {fetchToken} from '../Slices/AuthSlice';
 import Config from 'react-native-config';
 import Loader from '../Components/Loader.component';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../Utils/Colors';
 import PasswordInput from '../Components/PasswordInput';
 import {LoginNavScreenNames} from './LoginNavigator';
+import UserApi from '../Utils/ClientApis/UserApi';
+import {fetchUser, setUser} from '../Slices/UserSlice';
 
 function LoginScreen({navigation, setSignedIn}) {
   const [Email, setEmail] = useState('');
@@ -43,16 +42,20 @@ function LoginScreen({navigation, setSignedIn}) {
     let dataToSend = {username: Email, password: Password};
 
     dispatch(fetchToken(dataToSend))
-      //Change this
       .then(response => {
         //Hide Loader
+        console.log('response', response);
         setLoading(false);
         // If server response message same as Data Matched
         if (response.meta.requestStatus === 'fulfilled') {
           setSignedIn(true);
+          dispatch(fetchUser());
         } else {
           if (response.meta.requestStatus === 'rejected') {
             setErrortext(
+              'Your sign-in was rejected please check your email and password',
+            );
+            alert(
               'Your sign-in was rejected please check your email and password',
             );
           }
@@ -104,7 +107,7 @@ function LoginScreen({navigation, setSignedIn}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.mainBackground,
+    backgroundColor: Colors.secondaryColor,
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',

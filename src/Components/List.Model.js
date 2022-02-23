@@ -12,6 +12,7 @@ const ListModel = props => {
 
       <Modal
         backdropStyle={styles.backdrop}
+        style={props.modelStyle}
         onBackdropPress={() => setBackdropVisible(false)}
         transparent={true}
         visible={displayList}
@@ -22,6 +23,8 @@ const ListModel = props => {
           <View style={styles.modalView}>
             <Text>{props.title}</Text>
             <List
+              style={{width: '100%'}}
+              numColumns={2}
               data={props.items}
               keyExtractor={item => item.toString()}
               renderItem={props.renderItemSelect}
@@ -46,6 +49,8 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    flex: 1,
+    width: '100%',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,

@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import {Input, Text, Button} from '@ui-kitten/components';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchToken} from '../Utils/AuthSlice';
+import {fetchToken} from '../Slices/AuthSlice';
 import Config from 'react-native-config';
 import Loader from '../Components/Loader.component';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../Utils/Colors';
 
-const PasswordInput = ({password, setPassword, props}) => {
+const PasswordInput = props => {
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
   const toggleSecureEntry = () => {
@@ -28,15 +28,17 @@ const PasswordInput = ({password, setPassword, props}) => {
       <MaterialCommunityIcons name={secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
   );
+
   return (
     <Input
       {...props}
-      value={password}
+      style={props.style}
+      value={props.password}
       label="Password"
       placeholder="password.."
       accessoryRight={renderIcon}
       secureTextEntry={secureTextEntry}
-      onChangeText={nextValue => setPassword(nextValue)}
+      onChangeText={nextValue => props.setPassword(nextValue)}
     />
   );
 };

@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import TokenApi from '././ClientApis/TokenApi';
+import TokenApi from '../Utils/ClientApis/TokenApi';
 
 export const fetchToken = createAsyncThunk(
   'fetchToken',
@@ -16,20 +16,14 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     accessToken: '',
+    isSignedIn: 'false',
   },
-  reducers: {
-    setToken: (state, action) => {
-      // Add user to the state array
-      console.log('payload', action.payload);
-      state.entities.push(action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchToken.fulfilled, (state, action) => {
       // Add user to the state array
-      console.log('action', action);
-      state.accessToken = action.payload.value;
+      state.accessToken = action.payload.value.split(' ').pop();
     });
   },
 });

@@ -12,11 +12,10 @@ import MainScreenNavigator from './src/Screens/MainNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Provider} from 'react-redux';
-import store from './src/Utils/store';
+import store from './src/Slices/store';
 
 import {ApplicationProvider, Button, Layout} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
-import LoginScreen from './src/Screens/Login.Screen';
 import LoginNavigator from './src/Screens/LoginNavigator';
 
 const Stack = createStackNavigator();
@@ -24,12 +23,6 @@ const Stack = createStackNavigator();
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  const ReactNavigation = require('react-navigation');
-  ReactNavigation.SafeAreaView.setStatusBarHeight(0);
-  const HEIGHT = Dimensions.get('window').height;
-  const WIDTH = Dimensions.get('window').width;
-
-  const [response, setResponse] = useState('blank');
   return (
     <SafeAreaView style={[styles.container]}>
       <ApplicationProvider
@@ -50,7 +43,7 @@ export default function App() {
               </Stack.Navigator>
             ) : (
               //<LoginScreen setSignedIn={setIsSignedIn} />
-              <LoginNavigator />
+              <LoginNavigator setIsSignedIn={setIsSignedIn} />
             )}
           </NavigationContainer>
         </Provider>

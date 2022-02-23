@@ -11,8 +11,8 @@ function pad(n, width, z = 0) {
 }
 
 const minutesAndSeconds = position => [
-  pad(Math.floor(position / 60), 2),
-  pad(position % 60, 2),
+  Math.floor(position / 60),
+  Math.floor(position % 60),
 ];
 
 const AudioProgressBar = ({
@@ -21,11 +21,10 @@ const AudioProgressBar = ({
   onSeek,
   onSlidingStart,
 }) => {
-  const elapsed = minutesAndSeconds(currentPosition);
-  const remaining = minutesAndSeconds(trackLength - currentPosition);
+  //tracklength and currentPostion are in milliseconds
+  const elapsed = minutesAndSeconds(currentPosition / 60);
+  const length = minutesAndSeconds(trackLength / 60);
 
-  console.log('track length', trackLength);
-  console.log('currentPosition', currentPosition);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row'}}>
@@ -38,7 +37,7 @@ const AudioProgressBar = ({
             styles.text,
             {width: 40, color: defaultStringValue.darkColor},
           ]}>
-          {trackLength > 1 && '-' + remaining[0] + ':' + remaining[1]}
+          {length[0] + ':' + length[1]}
         </Text>
       </View>
       <Slider

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, Text, Pressable} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Card} from '@ui-kitten/components';
+import {Colors} from '../Utils/Colors';
 
 const SelectablePanel = props => {
   const onPress = () => {
@@ -9,8 +10,10 @@ const SelectablePanel = props => {
   };
 
   return (
-    <Pressable style={containerStyle(props.isSelected)} onPress={onPress}>
-      <Text style={textStyle(props.isSelected)}>{props.text}</Text>
+    <Pressable
+      style={[containerStyle(props.isSelected), props.styles]}
+      onPress={onPress}>
+      <Text>{props.text}</Text>
     </Pressable>
   );
 };
@@ -19,7 +22,7 @@ const containerStyle = isSelected => {
   let backColor = '';
 
   if (isSelected) {
-    backColor = '#FFA500';
+    backColor = Colors.secondaryColor;
   } else {
     backColor = 'white';
   }
@@ -29,26 +32,11 @@ const containerStyle = isSelected => {
     margin: 5,
     borderRadius: 20,
     borderWidth: 3,
-    borderColor: '#FFA500',
-    width: 250,
+    borderColor: Colors.secondaryColor,
     height: 60,
     backgroundColor: backColor,
     justifyContent: 'center',
     alignItems: 'center',
-  };
-};
-
-const textStyle = isSelected => {
-  let textColor = '';
-
-  if (isSelected) {
-    textColor = 'white';
-  } else {
-    textColor = '#FFA500';
-  }
-
-  return {
-    color: textColor,
   };
 };
 

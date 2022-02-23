@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {fetchRecordings} from './scripts/AudioRequests';
 
 export const audioRecsSlice = createSlice({
   name: 'audioRecs',

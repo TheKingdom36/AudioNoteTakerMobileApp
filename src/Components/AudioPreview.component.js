@@ -1,13 +1,11 @@
 import React from 'react';
-import {View, Text, StatusBar, Pressable} from 'react-native';
-import AudioProgressBar from './PlayerProgressBar.component';
-import Controls from './PlayerControls.component.';
+import {View, Text, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
-import LabeledText from '../Elements/LabeledText';
 import {ScreenNames} from '../Screens/MainNavigator';
 import {useNavigation} from '@react-navigation/native';
 import AudioPlayer from './Player.component';
 import {Colors} from '../Utils/Colors';
+import {generateAudioUrl} from '../Utils/AudioURLUtils';
 
 const AudioPreview = props => {
   const audioInfo = useSelector(state => {
@@ -22,8 +20,11 @@ const AudioPreview = props => {
 
   return (
     <Pressable onPress={navToAudioInfoScreen} style={styles.container}>
-      <AudioPlayer audioUrl={props.audioUrl} style={styles.audioPlayer} />
-
+      <AudioPlayer
+        audioUrl={generateAudioUrl(props.audioId)}
+        audioId={props.audioId}
+        style={styles.audioPlayer}
+      />
       <View style={[styles.infoSec]}>
         <Text>{audioInfo.name}</Text>
       </View>
@@ -50,9 +51,7 @@ const styles = {
 
   audioPlayer: {
     flex: 2,
-    margin: 5,
-    padding: 6,
-    borderRadius: 50,
+    paddingTop: 5,
   },
 
   audioElement: {
@@ -60,8 +59,8 @@ const styles = {
     width: 0,
   },
   infoSec: {
-    flex: 1,
     alignItems: 'center',
+    paddingBottom: 15,
   },
   allRoom: {
     flex: 1,

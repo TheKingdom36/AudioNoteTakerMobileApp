@@ -1,16 +1,18 @@
 import React, {useEffect} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateRecList} from '../Utils/AudioRecsSlice';
+import {updateRecList} from '../Slices/AudioRecsSlice';
 import {useIsFocused} from '@react-navigation/native';
-import {Layout, Card, Text} from '@ui-kitten/components';
+import {Layout, Card, Text, Button} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
 import {ScreenNames} from './MainNavigator';
 import AudioPreview from '../Components/AudioPreview.component';
 import FourGrid from '../Components/FourGrid.component';
 import AudioApi from '../Utils/ClientApis/AudioApi';
 import {ConstructAudioUrl} from '../Utils/AudioUtils';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import UserStats from '../Components/UserStats.component';
+import {fetchUser, setUser} from '../Slices/UserSlice';
+import {fetchToken} from '../Slices/AuthSlice';
 
 const HomeScreen = ({navigation}) => {
   var isFocused = useIsFocused();
@@ -23,6 +25,11 @@ const HomeScreen = ({navigation}) => {
     });
 
     return ids.slice(0, 4);
+  });
+
+  const userInfo = useSelector(state => {
+    console.log(state.user);
+    return state.user.User;
   });
 
   const recentAudioRecordings = () => {
@@ -49,37 +56,38 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate(ScreenNames.NewRecording);
   }
 
+  async function sample() {
+    await dispatch(
+      fetchToken({username: 'dan@gmail.com', password: 'password'}),
+    );
+    console.log('Sample');
+    await dispatch(fetchUser({}));
+  }
+
   return (
     <Layout style={[styles.container]}>
-      <View style={[styles.buffer]} />
+      <Button onPress={sample} />
 
-      <View style={{alignItems: 'center'}}>
+      <View style={[styles.upperSectionView]}>
         <Text style={styles.text} category="h4">
-          Create New Recording
+          Stats
         </Text>
+
+        <UserStats />
       </View>
 
-      <Card style={[styles.newRecordingSection]}>
-        <View>
-          <Pressable onPress={onPress} style={styles.createRecording}>
-            <MaterialIcons name="create" size={60} />
-          </Pressable>
+      <View style={[styles.buffer]} />
+      <View style={[styles.lowerSectionView]}>
+        <Text style={styles.text} category="h4">
+          Recent Recordings
+        </Text>
+
+        <View style={[styles.recentRecordingSection]}>
+          <FourGrid items={recentAudioRecordings()} />
         </View>
-      </Card>
 
-      <View style={[styles.buffer]} />
-
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.text} category="h4">
-          Your Recent Recordings
-        </Text>
+        <View style={[styles.buffer]} />
       </View>
-
-      <View style={[styles.recentRecordingSection]}>
-        <FourGrid items={recentAudioRecordings()} />
-      </View>
-
-      <View style={[styles.buffer]} />
     </Layout>
   );
 };
@@ -87,40 +95,37 @@ const HomeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.mainBackground,
-    paddingRight: 10,
-    paddingLeft: 10,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  newRecordingSection: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: Colors.secondaryColor,
-    borderRadius: 50,
+    padding: 10,
+    paddingTop: 20,
   },
-  titleText: {
-    fontSize: 40,
+  upperSectionView: {
+    height: '30%',
+    borderRadius: 20,
+    backgroundColor: 'white',
+  },
+  lowerSectionView: {
+    height: '68%',
+    borderRadius: 20,
+    backgroundColor: 'white',
   },
   recentRecordingSection: {
-    flex: 4,
+    height: '90%',
+    margin: 'auto',
     justifyContent: 'center',
   },
   buffer: {
-    flex: 0.15,
+    height: '2%',
   },
   text: {
     margin: 2,
-    color: '#808080',
+    paddingLeft: 10,
   },
-  createRecording: {
-    height: 72,
-    width: 72,
-    borderWidth: 1,
-    borderRadius: 72 / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+  headingText: {
+    height: '20%',
+    fontSize: 30,
+    paddingLeft: 20,
+    paddingTop: 10,
   },
 });
 

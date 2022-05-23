@@ -43,12 +43,12 @@ const AudioPlayer = ({
       {/*Need to pass in the audio path to play*/}
       <Controls onPressPlay={onPlay} onPressPause={onPause} paused={paused} />
 
-      {/* <AudioProgressBar
+      <AudioProgressBar
         onSeek={onSeek}
         trackLength={Duration()}
         onSlidingStart={setPaused(paused)}
         currentPosition={PlayTime()}
-      />*/}
+      />
     </View>
   );
 };
@@ -56,9 +56,6 @@ const AudioPlayer = ({
 const styles = {
   container: {
     flex: 1,
-    margin: 5,
-    padding: 6,
-    borderRadius: 50,
   },
   audioElement: {
     height: 0,

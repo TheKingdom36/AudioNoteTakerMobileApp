@@ -1,4 +1,4 @@
-import React, {useState, createRef} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -8,13 +8,10 @@ import {
 import {Input, Text, Button} from '@ui-kitten/components';
 import {useDispatch} from 'react-redux';
 import {fetchToken} from '../Slices/AuthSlice';
-import Config from 'react-native-config';
 import Loader from '../Components/Loader.component';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../Utils/Colors';
 import PasswordInput from '../Components/PasswordInput';
 import {LoginNavScreenNames} from './LoginNavigator';
-import UserApi from '../Utils/ClientApis/UserApi';
 import {fetchUser, setUser} from '../Slices/UserSlice';
 
 function LoginScreen({navigation, setSignedIn}) {
@@ -23,12 +20,8 @@ function LoginScreen({navigation, setSignedIn}) {
   const [loading, setLoading] = useState(false);
   const [errorText, setErrortext] = useState('');
   const dispatch = useDispatch();
-  const AlertIcon = props => (
-    <MaterialCommunityIcons {...props} name="record-rec" />
-  );
-  const passwordInputRef = createRef();
 
-  const handleLogin = () => {
+  async function handleLogin() {
     setErrortext('');
     if (!Email) {
       alert('Please fill Email');
@@ -41,15 +34,15 @@ function LoginScreen({navigation, setSignedIn}) {
     setLoading(true);
     let dataToSend = {username: Email, password: Password};
 
-    dispatch(fetchToken(dataToSend))
+    await dispatch(fetchToken(dataToSend))
       .then(response => {
         //Hide Loader
-        console.log('response', response);
         setLoading(false);
         // If server response message same as Data Matched
         if (response.meta.requestStatus === 'fulfilled') {
+          dispatch(fetchUser({}));
+
           setSignedIn(true);
-          dispatch(fetchUser());
         } else {
           if (response.meta.requestStatus === 'rejected') {
             setErrortext(
@@ -66,7 +59,7 @@ function LoginScreen({navigation, setSignedIn}) {
         setLoading(false);
         console.error(error);
       });
-  };
+  }
 
   const handleSignUp = () => {
     navigation.navigate(LoginNavScreenNames.Signup);

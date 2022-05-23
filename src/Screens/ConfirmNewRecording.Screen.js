@@ -10,7 +10,6 @@ const ConfirmNewRecordingScreen = ({navigation, route}) => {
   console.log('route', route);
 
   const onSubmit = data => {
-    console.log('data', data);
     AudioApi.instance.createRecording(route.params.path, data.Title, data.tags);
   };
 

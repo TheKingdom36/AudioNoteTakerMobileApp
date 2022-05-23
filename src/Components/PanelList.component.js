@@ -5,15 +5,11 @@ import {List, ListItem, Text} from '@ui-kitten/components';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const PanelList = ({audioIds, options = {}}) => {
-  let hi;
-
   const renderItem = ({item}) => (
     <ListItem style={[styles.item]} {...touchableOpacityProps}>
       <AudioPreview audioId={item} />
     </ListItem>
   );
-
-  const [titleSearchText, setTitleSearchText] = React.useState('');
 
   let touchableOpacityProps = {disabled: true};
 

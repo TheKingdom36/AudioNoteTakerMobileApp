@@ -50,7 +50,6 @@ const CreateNewRecordingScreen = ({navigation}) => {
       };
 
       const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
-      console.log('uri', uri);
       setUri(uri);
       audioRecorderPlayer.addRecordBackListener(recordListener);
 
@@ -79,7 +78,6 @@ const CreateNewRecordingScreen = ({navigation}) => {
     setIsRecording(false);
     setRecordTime('00:00:00');
     setHasActiveRecording(false);
-    console.log('result', result);
   };
 
   const PauseIcon = props => (

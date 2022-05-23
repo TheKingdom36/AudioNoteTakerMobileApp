@@ -20,14 +20,15 @@ const AudioPreview = props => {
 
   return (
     <Pressable onPress={navToAudioInfoScreen} style={styles.container}>
+      <View style={[styles.infoSec]}>
+        <Text>{audioInfo.name}</Text>
+      </View>
+
       <AudioPlayer
         audioUrl={generateAudioUrl(props.audioId)}
         audioId={props.audioId}
         style={styles.audioPlayer}
       />
-      <View style={[styles.infoSec]}>
-        <Text>{audioInfo.name}</Text>
-      </View>
     </Pressable>
   );
 };
@@ -36,7 +37,8 @@ const styles = {
   container: {
     flex: 1,
     margin: 5,
-    padding: 6,
+    padding: 5,
+    paddingTop: 15,
     borderRadius: 30,
     backgroundColor: Colors.secondaryColor,
     shadowColor: '#000',
@@ -51,7 +53,6 @@ const styles = {
 
   audioPlayer: {
     flex: 2,
-    paddingTop: 5,
   },
 
   audioElement: {
@@ -60,7 +61,6 @@ const styles = {
   },
   infoSec: {
     alignItems: 'center',
-    paddingBottom: 15,
   },
   allRoom: {
     flex: 1,

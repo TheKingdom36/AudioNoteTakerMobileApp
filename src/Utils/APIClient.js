@@ -229,7 +229,6 @@ class ApiClient {
    * @param {Array.<String>} authNames An array of authentication method names.
    */
   applyAuthToRequest(options, auth) {
-    console.log(auth);
     switch (auth.type) {
       case 'basic':
         if (auth.username || auth.password) {

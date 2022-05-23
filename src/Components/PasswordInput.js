@@ -12,7 +12,7 @@ import {Input, Text, Button} from '@ui-kitten/components';
 import {useSelector, useDispatch} from 'react-redux';
 import {fetchToken} from '../Slices/AuthSlice';
 import Config from 'react-native-config';
-import Loader from '../Components/Loader.component';
+import Loader from './Loader.component';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../Utils/Colors';
 

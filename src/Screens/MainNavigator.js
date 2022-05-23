@@ -22,6 +22,7 @@ export const ScreenNames = {
   NewRecording: 'NewRecording',
   ConfirmNewRecording: 'ConfirmNewRecording',
   AudioInfo: 'AudioInfo',
+  RecordingList: 'RecordingList',
 };
 
 const MainScreenNavigator = () => {
@@ -67,8 +68,8 @@ const MainTabNav = () => {
       />
 
       <Tab.Screen
-        name="RecordingsTab"
-        children={() => <RecordingsListScreen />}
+        name={ScreenNames.RecordingList}
+        children={RecordingsListScreen}
         options={{
           tabBarLabel: 'List',
           tabBarIcon: ({color, size}) => (

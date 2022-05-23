@@ -1,17 +1,17 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateRecList} from '../Slices/AudioRecsSlice';
 import {useIsFocused} from '@react-navigation/native';
-import {Layout, Card, Text, Button} from '@ui-kitten/components';
+import {Layout, Text} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
 import {ScreenNames} from './MainNavigator';
 import AudioPreview from '../Components/AudioPreview.component';
 import FourGrid from '../Components/FourGrid.component';
 import AudioApi from '../Utils/ClientApis/AudioApi';
 import {ConstructAudioUrl} from '../Utils/AudioUtils';
-import UserStats from '../Components/UserStats.component';
-import {fetchUser, setUser} from '../Slices/UserSlice';
+import WelcomeBanner from '../Components/WelcomeBanner.component';
+import {fetchUser} from '../Slices/UserSlice';
 import {fetchToken} from '../Slices/AuthSlice';
 
 const HomeScreen = ({navigation}) => {
@@ -28,7 +28,6 @@ const HomeScreen = ({navigation}) => {
   });
 
   const userInfo = useSelector(state => {
-    console.log(state.user);
     return state.user.User;
   });
 
@@ -66,14 +65,8 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <Layout style={[styles.container]}>
-      <Button onPress={sample} />
-
       <View style={[styles.upperSectionView]}>
-        <Text style={styles.text} category="h4">
-          Stats
-        </Text>
-
-        <UserStats />
+        <WelcomeBanner />
       </View>
 
       <View style={[styles.buffer]} />

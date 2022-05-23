@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, Pressable, View} from 'react-native';
 import {StyleService, Text, useStyleSheet} from '@ui-kitten/components';
 import {Colors} from '../Utils/Colors';
@@ -8,15 +8,43 @@ import {useSelector} from 'react-redux';
 import AudioPlayer from '../Components/Player.component';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {ScreenNames} from './MainNavigator';
+import ExpandableComponent from '../Components/Expandabel.component';
 
 const AudioInfo = ({route, navigation}) => {
   const styles = useStyleSheet(themedStyles);
+  const [data, setData] = useState(content);
 
   const audioId = route.params.audioId;
 
   const audioInfo = useSelector(state => {
     return state.audioRecs.values.find(element => element.id === audioId);
   });
+
+  const onClick = () => {
+    console.log('new Data', data);
+    let ne = data;
+    if (data.isExpanded) {
+      data.isExpanded = false;
+    } else {
+      data.isExpanded = true;
+    }
+
+    setData(data);
+  };
+
+  const DangerZone = ({style}) => {
+    return (
+      <View style={style}>
+        <ExpandableComponent
+          key={data.category_name}
+          item={data}
+          onClickFunction={() => {
+            onClick(data.category_name);
+          }}
+        />
+      </View>
+    );
+  };
 
   return (
     <ScrollView
@@ -32,13 +60,14 @@ const AudioInfo = ({route, navigation}) => {
           {audioInfo.name}
         </Text>
         <AudioPlayer
-          style={styles.audioPlayerControls}
+          style={styles.section}
           audioUrl={'default audioUrl'}
           audioId={audioId}
         />
-        <AudioDetails style={styles.audioDetails} data={audioInfo} />
+        <AudioDetails style={styles.section} data={audioInfo} />
 
-        <TranscribeCard style={styles.transcribe} data={audioInfo} />
+        <TranscribeCard style={styles.section} data={audioInfo} />
+        <DangerZone style={styles.section} />
       </View>
     </ScrollView>
   );
@@ -53,16 +82,7 @@ const themedStyles = StyleService.create({
   titleText: {
     paddingLeft: 10,
   },
-
-  audioPlayerControls: {
-    backgroundColor: Colors.secondaryColor,
-    margin: 10,
-    padding: 10,
-    borderRadius: 20,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  audioDetails: {
+  section: {
     backgroundColor: Colors.secondaryColor,
     margin: 10,
     padding: 10,
@@ -71,14 +91,11 @@ const themedStyles = StyleService.create({
     borderWidth: 1,
   },
 
-  transcribe: {
-    backgroundColor: Colors.secondaryColor,
-    margin: 10,
-    padding: 10,
-    borderRadius: 20,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
+  audioPlayerControls: {},
+  audioDetails: {},
+
+  transcribe: {},
+  dangerZone: {},
   contentContainer: {
     paddingVertical: 24,
   },
@@ -98,5 +115,11 @@ const themedStyles = StyleService.create({
   },
   cancel: {alignItems: 'flex-end', paddingRight: 20, paddingTop: 20},
 });
+
+let content = {
+  isExpanded: false,
+  category_name: 'Item 1',
+  content: <Text>Hello</Text>,
+};
 
 export default AudioInfo;

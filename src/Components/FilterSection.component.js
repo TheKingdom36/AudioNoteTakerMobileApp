@@ -64,59 +64,52 @@ const FilterSection = ({onSubmit}) => {
 
   return (
     <Layout style={[styles.container]}>
-      <View style={[styles.horizontalSplit]}>
-        <View style={[styles.nameSearchSec]}>
-          <TextInput
-            style={[styles.input]}
-            onChangeText={setTitleSearchText}
-            value={titleSearchText}
-            placeholder="Title to search..."
+      <View style={[styles.nameSearchSec]}>
+        <TextInput
+          style={[styles.input]}
+          onChangeText={setTitleSearchText}
+          value={titleSearchText}
+          placeholder="Title to search..."
+        />
+      </View>
+
+      <View style={[styles.tagFilterSec]}>
+        <View style={{flexDirection: 'row'}}>
+          {sTags.size <= 0 ? null : (
+            <List
+              contentContainerStyle={[styles.tagList]}
+              horizontal={true}
+              data={sTags}
+              keyExtractor={item => item.toString()}
+              renderItem={tagRenderItem}
+            />
+          )}
+          <ListModel
+            renderItemSelect={tagRenderItemSelect}
+            modelStyle={{width: '80%'}}
+            items={uniqueTags}
+            buttonText="Add Tag"
+            title="Avaiable Tags"
           />
         </View>
       </View>
 
-      <View style={[styles.horizontalSplit]}>
-        <View style={[styles.tagFilterSec]}>
-          <View style={{flexDirection: 'row'}}>
-            {sTags.size <= 0 ? null : (
-              <List
-                contentContainerStyle={[styles.tagList]}
-                horizontal={true}
-                data={sTags}
-                keyExtractor={item => item.toString()}
-                renderItem={tagRenderItem}
-              />
-            )}
-            <ListModel
-              renderItemSelect={tagRenderItemSelect}
-              modelStyle={{width: '80%'}}
-              items={uniqueTags}
-              buttonText="Add Tag"
-              title="Avaiable Tags"
-            />
-          </View>
+      <View style={[styles.dateSearchSec]}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
+          <Text>{selectedStartDate}</Text>
+          <Text> to</Text>
+          <Text>{selectedEndDate}</Text>
         </View>
+
+        <DateSelection />
       </View>
 
-      <View style={[styles.horizontalSplit]}>
-        <View style={[styles.dateSearchSec]}>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-            }}>
-            <Text>{selectedStartDate}</Text>
-            <Text> to</Text>
-            <Text>{selectedEndDate}</Text>
-          </View>
-          <View style={{alignSelf: 'flex-end', flexDirection: 'row'}}>
-            <DateSelection />
-          </View>
-        </View>
-      </View>
-
-      <ButtonGroup appearance="outline">
+      <ButtonGroup appearance="outline" style={[styles.bottomButtons]}>
         <Button style={[styles.button]} onPress={() => onReset()}>
           Reset
         </Button>
@@ -143,21 +136,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  titleSec: {
-    flex: 1,
-  },
   tagFilterSec: {
-    flex: 3,
+    height: '20%',
     justifyContent: 'center',
   },
   dateSearchSec: {
-    flex: 1,
+    height: '30%',
     flexDirection: 'row',
     alignItems: 'center',
+    alignContent: 'center',
+  },
+  bottomButtons: {
+    height: '20%',
+    borderRadius: 20,
+    marginBottom: 10,
+    marginTop: 10,
   },
   nameSearchSec: {
-    flex: 1,
-    minHeight: 60,
+    height: '20%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -180,23 +176,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     alignSelf: 'center',
-    backgroundColor: Colors.secondaryColor,
     maxHeight: 30,
-  },
-
-  horizontalSplit: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingTop: 8,
-    paddingBottom: 8,
   },
   button: {
     flex: 1,
   },
   input: {
     height: 100,
-    margin: 12,
-    borderWidth: 1,
     flex: 1,
     alignSelf: 'stretch',
   },

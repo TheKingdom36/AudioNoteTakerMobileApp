@@ -16,10 +16,7 @@ class UserApi {
     let contentTypes = [];
     let accepts = ['application/xml', 'application/json'];
     let returnType = User;
-
     let auth = getAuthenication();
-
-    console.log(auth);
 
     return ApiClient.instance.callApi(
       '/user',
